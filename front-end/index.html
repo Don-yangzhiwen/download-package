@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+  <style>
+    a {
+      text-decoration: none;
+    }
+
+    ul {
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+    }
+
+    li {
+      margin: 0;
+      padding: 5px;
+      float: left;
+      list-style: none;
+    }
+
+    li img {
+      width: 150px;
+      height: 150px;
+      display: block;
+      border: 1px solid #CCC;
+    }
+  </style>
+</head>
+
+<body>
+  根据百度图片接口，查找并下载相应的图片，打包成压缩包，可客户端下载
+  <input type="text" placeholder="请输入百度图片关键字" id="keyword" name="keyword">
+  <input type="number" id="num" placeholder="默认30条">
+  <input type="submit" value="提交" id="btn-tj">
+  <button>
+    <a href="javascript:;" id="downloadzip">下载压缩包</a>
+  </button>
+  <ul id="preview"></ul>
+  <script src="https://cdn.bootcss.com/jquery/1.10.0/jquery.min.js"></script>
+  <script>
+    $('#btn-tj').click(function () {
+      if (!$('#keyword').val().trim()) {
+        alert('请输入关键字');
+        return false;
+      };
+      $.get('http://127.0.0.1:3000/search', {
+        keyword: $('#keyword').val(),
+        num: $('#num').val(),
+      }, function (res) {
+        console.log(res);
+        $('#downloadzip').attr({
+          href: 'http://127.0.0.1:3000/download?zipname=' + res.createDir.name,
+        });
+        var str = '';
+        for (var i = 0; i < res.data.length - 1; i++) {
+          str += '<li>';
+          str += '<img src="' + res.data[i].middleURL + '" alt="' + res.data[i].fromPageTitle + '">';
+          str += '</li>';
+        }
+        // $('#preview').html(str);
+        alert(res.saveImage.msg);
+      });
+    });
+  </script>
+</body>
+
+</html>
